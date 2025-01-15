@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .book-list {
+            margin-top: 20px;
+        }
+
+        .book-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .book-item h3 {
+            margin: 0;
+            padding: 0;
+            color: #007BFF;
+        }
+
+        .book-item p {
+            margin: 5px 0;
+        }
+
+        .message {
+            font-style: italic;
+            color: #888;
+        }
+
+        .back-home {
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    {% if issue %}
+
+    <h1>Hi {{name}} !!!</h1>
+    <ul>
+        <li>Roll No: {{pk}}</li>
+        <li>Books:</li>
+    </ul>
+        
+
+    <div class="class-list">
+
+        {% for i in issue%}
+            
+            <div class="book-item">
+                <h3>{{i.book.title}}</h3>
+                <p>{{i.book.ISBN}}</p>
+                <div class="action-buttons">
+                    <form action="{%url 'return_book' id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Return</button>
+                    </form>
+
+                </div>
+            </div>
+        
+        {% endfor %}
+    </div>
+
+    {%else%}
+        <p class="message">Prayash Jari xa ekdin pura hunxa</p>
+        <h1>Issue to see Your Books Here...!!!</h1>
+    
+    {% endif %}
+
+    <div class="back-home">
+        <h1>Back to <a href="/">Home</a></h1>
+    </div>
+
+    
+</body>
+</html>

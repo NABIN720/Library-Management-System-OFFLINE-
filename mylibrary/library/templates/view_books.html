@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Book</title>
+    <style>
+        .page-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    
+        /* Search Styling */
+        .search-container {
+            margin-bottom: 30px;
+        }
+    
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+    
+        .search-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+        }
+    
+        .search-results {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 400px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .search-result-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .search-result-item:hover {
+            background-color: #f5f8fa;
+        }
+    
+        /* Table Styling */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+    
+        .books-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+    
+        .books-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #dee2e6;
+        }
+    
+        .books-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            color: #2d3436;
+        }
+    
+        .book-row {
+            transition: background-color 0.2s ease;
+        }
+    
+        .book-row:hover {
+            background-color: #66a5d2;
+            cursor: pointer;
+        }
+        .highlight {
+            background-color: #eeca51;
+        }
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+    
+            .search-input {
+                max-width: 100%;
+            }
+    
+            .search-results {
+                width: 100%;
+            }
+        }
+    
+        /* Current User and Time Display */
+        .user-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+    
+        /* Alternative Row Colors */
+        .book-row:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    
+        /* Column Specific Styling */
+        .title {
+            font-weight: 500;
+            color: #2980b9;
+        }
+    
+        .author {
+            font-style: italic;
+        }
+    </style>
+    
+</head>
+{% extends 'main.html' %}
+<body>
+    {% block content %}
+    <div class="page-container">
+
+        <div class="search-container">
+            <input type="text" class="search-input" id="book_search" name="book_name" placeholder="Search for books" onkeyup="search_book()">
+            <ul id="view_searched" class="search-results"></ul>
+        </div>
+
+        <div class="table-container">
+
+            <table class="books-table">
+                <thead>
+                    <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Genre</th>
+                    <th>Book number</th>
+                
+                    </tr>
+                </thead>
+            
+                <tbody>
+                    {% for book in books%}
+                    <tr data-id="{{book.id}}" class="book book-row">
+                        <td>{{book.id}}</td>
+                        <td class="title">{{book.title}}</td>
+                        <td class="author">{{book.author}}</td>
+                        <td class="isbn">{{book.ISBN}}</td>
+                        <td>{{book.genre}}</td>
+                        <td>{{book.book_no}}</td>
+                    
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
+    <script>
+        function search_book(){
+            //get search input and bookrows
+            const searchInput = document.getElementById('book_search');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            const book_rows = document.getElementsByClassName('book');
+            const search_results = document.getElementById('view_searched');
+
+            // if search term is empty , hide the search results 
+            if (searchTerm.length === 0){
+                search_results.style.display = 'none';
+
+                // show all rows in the main table 
+                Array.from(book_rows).forEach(row => {
+                    row.style.display = '';
+                    row.classList.remove('highlight');
+                });
+                return;
+            }
+
+            //clear previous search results
+            search_results.innerHTML = '';
+            search_results.style.display = 'block';
+
+            let matches_found = false;
+
+            //loop through all book rows
+
+            Array.from(book_rows).forEach(row => {
+                const title = row.querySelector('.title').textContent.toLowerCase();
+                const author = row.querySelector('.author').textContent.toLowerCase();
+                const isbn = row.querySelector('.isbn').textContent.toLowerCase();
+
+                //check if search matches any field
+
+                if (title.includes(searchTerm) || author.includes(searchTerm) || isbn.includes(searchTerm)){
+                    matches_found = true;
+
+                    // create a div for the match 
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.innerHTML = `
+                        <strong>${row.querySelector('.title').textContent}</strong><br>
+                        by ${row.querySelector('.author').textContent}
+                    `;
+
+                    //add click handler to scroll to the row
+                    resultItem.onclick = () =>{
+                        //remove previous highlights
+                        Array.from(book_rows).forEach(r => r.classList.remove('highlight'));
+
+                        //highlight selected row
+                        row.classList.add('highlight');
+
+                        // scroll row into view 
+                        row.scrollIntoView({ behavior: 'smooth', block:"center"});
+
+                        //hide search results
+                        search_results.style.display = 'none';
+
+                        //update search input
+                        searchInput.value = row.querySelector('.title').textContent;
+
+                    };
+
+                    search_results.appendChild(resultItem);
+                    row.style.display = '';
+
+
+
+                }else{
+                    row.style.display = 'none';
+                }
+            });
+
+            search_results.style.display = matches_found ? 'block' : 'none';
+
+            //if no matches found
+            if (!mathes_found){
+                let li = document.createElement('li');
+                li.className = 'no-results';
+                li.textContent = 'No students found';
+                search_results.appendChild(li);
+            }
+   
+        }
+
+        //Add click event listener to handle clicking outside thge search results
+        document.addEventListener('click',function(event){
+            const search_results = document.getElementById('view_searched');
+            const searchInput = document.getElementById('book_search');
+
+            if (!search_results.contains(event.target) && event.target != searchInput){
+                search_results.style.display = 'none';
+            }
+
+        });
+
+        //init search on page load 
+        document.addEventListener('DOMContentLoaded',function(){
+            //clear search input 
+            document.getElementById('book_search').value = '';
+            //show all rows
+            Array.from(document.getElementsByClassName('book-row')).forEach(row =>{
+                row.style.display = '';
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

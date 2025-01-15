@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>
+    <style>
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .search{
+            margin: 20px;
+            text-align: center;
+        }
+
+        .form-control {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #4CAF50;
+        }
+
+
+
+        #student_search {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        #view_searched {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        #view_searched li {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        #view_searched a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .clickable-row a {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* .student {
+            display: none; /* Hidden initially; data source for searching 
+        } 
+         */
+
+
+    </style>
+</head>
+{% extends 'main.html' %}
+<body>
+    {% block content %}
+    <div class="search">
+        <input type="text" class="form-control" id="student_search" name="student_name" placeholder="Search Student" onkeyup="search_student()">
+        <ul id="view_searched" style="display: none;"></ul>
+
+    </div>
+    
+
+    <table class="table table_stripped">
+        <thead>
+
+            <tr>
+                <th>Roll no</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Study Program</th>
+                <th>Guardian</th>
+                <th>Email</th>
+            </tr>
+        </thead>    
+        <tbody>
+
+            {%for student in students%}
+            <tr id="{{student.fullname}}" class="student clickable_row">
+                <td class="roll_no">{{student.roll_no}}</td>
+                <td class="name"><a href="/dashboard/{{student.roll_no}}/">{{student.fullname}}</a></td>
+                <td>{{student.address}}</td>
+                <td>{{student.program}}</td>
+                <td>{{student.Guardian_name}}</td>
+                <td>{{student.Email}}</td>
+                
+            </tr>{% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+    <script>
+        function search_student() {
+            // Get input element
+            let input = document.getElementById('student_search');
+            let search_term = input.value.toLowerCase();
+    
+            // Get all student rows
+            let student_rows = document.getElementsByClassName('student');
+            let search_results = document.getElementById('view_searched');
+    
+            // If search term is empty, hide the search results dropdown
+            if (search_term.length === 0) {
+                search_results.style.display = 'none';
+                // Show all rows in the main table
+                for (let row of student_rows) {
+                    row.style.display = '';
+                }
+                return;
+            }
+
+            // Clear previous search results
+            search_results.innerHTML = '';
+            search_results.style.display = 'block';
+    
+            let matches_found = false;
+    
+            // Loop through all student rows
+            for (let row of student_rows) {
+                let name = row.getElementsByClassName('name')[0].textContent.toLowerCase();
+                let roll_no = row.getElementsByClassName('roll_no')[0].textContent.toLowerCase();
+        
+                // Check if the search term matches either name or roll number
+                if (name.includes(search_term) || roll_no.includes(search_term)) {
+                    matches_found = true;
+            
+                    // Create a list item for the match
+                    let li = document.createElement('li');
+                    li.className = 'search-result-item';
+            
+                    // Create a link with the student's information
+                    let link = document.createElement('a');
+                    link.href = `/students/${roll_no}`;
+                    link.textContent = `${name} (${roll_no})`;
+
+                    li.appendChild(link);
+                    search_results.appendChild(li);
+
+                    // Show the matching row in the main table
+                    row.style.display = '';
+                } else {
+                    // Hide non-matching rows in the main table
+                    row.style.display = 'none';
+                }
+            }
+    
+            // If no matches found, show a message
+            if (!matches_found) {
+                let li = document.createElement('li');
+                li.className = 'no-results';
+                li.textContent = 'No students found';
+                search_results.appendChild(li);
+            }
+        }
+
+        // Add click event listener to handle clicking outside the search results
+        document.addEventListener('click', function(event) {
+            let search_results = document.getElementById('view_searched');
+            let search_input = document.getElementById('student_search');
+
+            if (!search_results.contains(event.target) && event.target !== search_input) {
+                search_results.style.display = 'none';
+            }
+        });
+    </script>
+
+    {% endblock %}
+</body>
+</html>

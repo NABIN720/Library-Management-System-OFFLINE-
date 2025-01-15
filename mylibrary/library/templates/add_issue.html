@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Isuue Section</title>
+    <style>
+        /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Container */
+form {
+    width: 50%;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h3 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+.student_selection {
+    position: relative;
+    max-width: 400px;
+    margin: 20px 0;
+}
+
+/* Labels and Inputs */
+label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#search_student {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#search_student {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.quick-search-item:hover {
+    background-color: #f5f5f5;
+}
+
+.no-results {
+    padding: 8px 12px;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+}
+
+#id_student {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+#id_student option:checked {
+    background-color: #e6e6e6;
+}
+
+
+
+/* Button Styles */
+button.btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.btn:hover {
+    background-color: #0056b3;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+/* Search View */
+#book_search_view, #quick_std_search_view {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: none;
+}
+
+#quick_std_search_view div,
+#book_search_view label {
+    display: block;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.search-result-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.search-result-item:hover {
+    background-color: #f0f0f0;
+}
+
+#quick_std_search_view div:hover,
+#book_search_view label:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+    </style>
+</head>
+{%extends 'main.html'%}
+<body>
+    {%block content%}
+    </div>
+
+    <form action="add_issue" method="post">
+        {% csrf_token %}
+        <div>
+
+            {% csrf_token %}
+            {{ form.as_p}}
+            
+           
+        
+        <button type="submit" class="btn">Issue Book</button>
+        
+    </div>
+    </form>
+
+
+    
+
+    {%endblock%}
+    
+</body>
+</html>
