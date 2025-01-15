@@ -40,7 +40,7 @@ This feature is to add the students to the database
 
 ## To see student details about boook and to return book
 
-![Add_issue screenshot](https://github.com/NABIN720/Library-Management-System-OFFLINE-/blob/main/SCREENSHOTS/TO%20RETURN.pn)
+![Add_issue screenshot](https://github.com/NABIN720/Library-Management-System-OFFLINE-/blob/main/SCREENSHOTS/TO%20RETURN.png)
 
 
 
